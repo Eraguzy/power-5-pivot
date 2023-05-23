@@ -1,235 +1,313 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<time.h>
 
-#define SIZE 10
-#define MAX_INPUT_SIZE 10
-#define WINNING_CONDITION 5
-#define PIVOT_ROTATION_INTERVAL 3
+#define LA 10 // largeur de cases
+#define HA 8 // hauteur de cases
 
-bool isValidInput(int row, int col) {
-    return row >= 0 && row < SIZE && col >= 0 && col < SIZE;
-}
+void displayer(int ha, int la, char **tab) {
+    // Fonction pour afficher le tableau
+    printf("╔═══");
+    for (int i=0; i<la-1; i++){
+        printf("╦═══");              //first line
+    }
+    printf("╗\n");
 
-void rotatePieces(char board[SIZE][SIZE], int pivotRow, int pivotCol, int pivotSize, char direction) {
-    int i, j;
-    char tempBoard[SIZE][SIZE];
 
-    // Copier le plateau dans une matrice temporaire
-    for (i = 0; i < SIZE; i++) {
-        for (j = 0; j < SIZE; j++) {
-            tempBoard[i][j] = board[i][j];
+    for (int i=0; i<ha-1; i++){
+        for (int j=0; j<la; j++){    //loop for tab values + colors (between lines)
+            if(tab[i][j]=='x'){
+                printf("║ \033[31m%c\033[0m ",tab[i][j]); //red
+            }
+            else if(tab[i][j]=='+'){
+                printf("║\033[40m %c \033[0m",tab[i][j]); //black bg
+            }
+            else{
+                printf("║ \033[36m%c\033[0m ",tab[i][j]); //light blue
+            }
         }
+        printf("║\n");
+
+        printf("╠═══");
+        for (int i=0; i<la-1; i++){
+            printf("╬═══");              //loop for middle width lines
+        }
+        printf("╣\n");
     }
 
-    // Vérifier et mettre à jour les pièces dans le rayon du pivot
-    for (i = pivotRow - pivotSize / 2; i <= pivotRow + pivotSize / 2; i++) {
-        for (j = pivotCol - pivotSize / 2; j <= pivotCol + pivotSize / 2; j++) {
-            if (isValidInput(i, j)) {
-                if (direction == 'D') {
-                    board[i][j] = tempBoard[j][pivotRow - i + pivotCol];
-                } else if (direction == 'G') {
-                    board[i][j] = tempBoard[pivotCol - j + pivotRow][i];
+    for (int j=0; j<la; j++){    //loop for tab values + colors (between lines) (last line)
+        if(tab[ha-1][j]=='x'){
+            printf("║ \033[31m%c\033[0m ",tab[ha-1][j]); //red
+        }
+        else if(tab[ha-1][j]=='+'){
+            printf("║\033[40m %c \033[0m",tab[ha-1][j]); //red
+        }
+        else{
+            printf("║ \033[36m%c\033[0m ",tab[ha-1][j]); //light blue
+        }
+    }
+    printf("║\n");
+
+    printf("╚═══");
+    for (int i=0; i<la-1; i++){
+        printf("╩═══");              //last line
+    }
+    printf("╝\n");
+
+    int count=0;
+    for (int i=0; i<la; i++){
+        count++;
+        printf("| %2d",count);
+    }
+    printf("|\n");           //numéro des colonnes
+}
+int endgame(char cas, int ha, int la, char** tab) {
+    // Fonction pour détecter la fin du jeu et afficher le gagnant
+    displayer(ha, la, tab);
+    if(cas=='x'){
+        printf("joueur 1 (\033[31mx\033[0m) a gagné !\n");
+    }
+    else{
+        printf("joueur 2 (\033[36mo\033[0m) a gagné !\n");
+    }
+    return 0;
+}
+
+int notfull(int ha, int la, char ** tab) {
+    for (int j=0; j<la; j++){
+        if(tab[0][j]==32){
+            return 1;
+        }
+    }
+    displayer(ha, la, tab);
+    printf("Egalité !\n");
+    return 0;
+}
+
+
+int align4(int n, int ha, int la, char **tab) {
+    int count = 0;
+
+    for (int i = 0; i < ha; i++) {
+        for (int j = 0; j < la; j++) {
+            if (tab[i][j] != ' ') {
+                count = 0;
+
+                // Vérification horizontale
+                for (int k = 0; k < n && j + k < la; k++) {
+                    if (tab[i][j] == tab[i][j + k]) {
+                        count++;
+                    }
+                }
+                if (count == n) {
+                    endgame(tab[i][j], ha, la, tab);
+                    return 0;
+                }
+
+                count = 0;
+
+                // Vérification verticale
+                for (int k = 0; k < n && i + k < ha; k++) {
+                    if (tab[i][j] == tab[i + k][j]) {
+                        count++;
+                    }
+                }
+                if (count == n) {
+                    endgame(tab[i][j], ha, la, tab);
+                    return 0;
+                }
+
+                count = 0;
+
+                // Vérification diagonale bas droite
+                for (int k = 0; k < n && i + k < ha && j + k < la; k++) {
+                    if (tab[i][j] == tab[i + k][j + k]) {
+                        count++;
+                    }
+                }
+                if (count == n) {
+                    endgame(tab[i][j], ha, la, tab);
+                    return 0;
+                }
+
+                count = 0;
+
+                // Vérification diagonale haut droite
+                for (int k = 0; k < n && i - k >= 0 && j + k < la; k++) {
+                    if (tab[i][j] == tab[i - k][j + k]) {
+                        count++;
+                    }
+                }
+                if (count == n) {
+                    endgame(tab[i][j], ha, la, tab);
+                    return 0;
                 }
             }
         }
     }
+
+    return 1;
 }
 
-void printBoard(char board[SIZE][SIZE]) {
-    int i, j;
-
-    printf("Plateau de jeu :\n");
-
-    // Afficher les indices de colonnes
-    printf("  ");
-    for (j = 0; j < SIZE; j++) {
-        printf("%2d ", j);
+int choix(int tour, int ha, int la, char **tab) {
+    int column;
+    if (tour % 2 != 0) {
+        do {
+            printf("\nAu tour de joueur 1 (\033[31mx\033[0m)\nquelle colonne joues-tu ?\n");
+            scanf(" %d", &column);
+            column -= 1; // mismatch btw array index and display (range 0-6 and range 1-7)
+        } while ((column < 0 || column >= la) || tab[0][column] != ' ');
+        tab[0][column] = 'x';
     }
-    printf("\n");
+    if (tour % 2 == 0) {
+        do {
+            printf("\nAu tour de joueur 2 (\033[36mo\033[0m)\nquelle colonne joues-tu ?\n");
+            scanf(" %d", &column);
+            column -= 1;
+            int pivotSize, direction;
+            printf("\nChoisissez la taille du pivot (3 ou 5) : ");
+            scanf("%d", &pivotSize);
+            printf("Choisissez la direction du pivot (1 pour gauche, 2 pour droite) : ");
+            scanf("%d", &direction);
 
-    for (i = 0; i < SIZE; i++) {
-        // Afficher l'indice de ligne
-        printf("%2d ", i);
-
-        for (j = 0; j < SIZE; j++) {
-            char symbol;
-            if (board[i][j] == ' ') {
-                symbol = '+';
-            } else {
-                symbol = board[i][j];
+            // Appliquer le pivot à gauche
+            if (direction == 1) {
+                for (int i = 0; i < pivotSize; i++) {
+                    for (int j = 0; j < ha; j++) {
+                        char temp = tab[j][column - i];
+                        tab[j][column - i] = tab[j][column];
+                        tab[j][column] = temp;
+                    }
+                }
             }
-            printf("%2c ", symbol);
-        }
-        printf("\n");
-    }
-}
-
-bool checkVictory(char board[SIZE][SIZE], int row, int col, char playerSymbol) {
-    int count;
-
-    // Vérifier l'horizontale
-    count = 0;
-    for (int i = col - WINNING_CONDITION + 1; i <= col; i++) {
-        if (i < 0 || i >= SIZE || board[row][i] != playerSymbol) {
-            count = 0;
-        } else {
-            count++;
-        }
-        if (count == WINNING_CONDITION) {
-            return true;
-        }
+        } while ((column < 0 || column >= la) || tab[0][column] != ' ');
+        tab[0][column] = 'o';
     }
 
-    // Vérifier la verticale
-    count = 0;
-    for (int i = row - WINNING_CONDITION + 1; i <= row; i++) {
-        if (i < 0 || i >= SIZE || board[i][col] != playerSymbol) {
-            count = 0;
-        } else {
-            count++;
-        }
-        if (count == WINNING_CONDITION) {
-            return true;
-        }
-    }
-
-    // Vérifier la diagonale (haut gauche - bas droite)
-    count = 0;
-    for (int i = -WINNING_CONDITION + 1; i <= 0; i++) {
-        int r = row + i;
-        int c = col + i;
-        if (r < 0 || r >= SIZE || c < 0 || c >= SIZE || board[r][c] != playerSymbol) {
-            count = 0;
-        } else {
-            count++;
-        }
-        if (count == WINNING_CONDITION) {
-            return true;
-        }
-    }
-
-    // Vérifier la diagonale (haut droite - bas gauche)
-    count = 0;
-    for (int i = -WINNING_CONDITION + 1; i <= 0; i++) {
-        int r = row + i;
-        int c = col - i;
-        if (r < 0 || r >= SIZE || c < 0 || c >= SIZE || board[r][c] != playerSymbol) {
-            count = 0;
-        } else {
-            count++;
-        }
-        if (count == WINNING_CONDITION) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-int main() {
-    char board[SIZE][SIZE];
-
-    // Initialiser le plateau avec des espaces
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            board[i][j] = ' ';
-        }
-    }
-
-    int pivotSize;
-    char input[MAX_INPUT_SIZE];
-    int player = 1;
-    int turnCount = 0;
-
-    // Afficher le plateau vide
-    printf("Plateau de jeu (vide) :\n");
-    printBoard(board);
-
-    // Remplir le plateau jusqu'à ce que l'utilisateur entre "stop"
-    printf("Remplissez le plateau (entrez 'stop' pour terminer):\n");
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            scanf("%s", input);
-            if (strcmp(input, "stop") == 0) {
-                break;
-            }
-            int row, col;
-            scanf(input, "%d %d", &row, &col);
-            if (!isValidInput(row, col)) {
-                printf("Coordonnées invalides. Réessayez.\n");
-                j--;
-                continue;
-            }
-            if (board[row][col] != ' ') {
-                printf("La case est déjà occupée. Réessayez.\n");
-                j--;
-                continue;
-            }
-            board[row][col] = player == 1 ? 'X' : 'O';
-
-            // Afficher le plateau après chaque remplissage
-            printf("Plateau de jeu :\n");
-            printBoard(board);
-        }
-        if (strcmp(input, "stop") == 0) {
-            break;
-        }
-    }
-
-    // Demander à l'utilisateur s'il souhaite un pivot de 3x3 ou 5x5
-    do {
-        printf("Choisissez la taille du pivot (3 pour 3x3, 5 pour 5x5) : ");
+    // Demande de pivot après chaque fois que deux pions sont posés
+    if (tour % 2 == 0) {
+        int pivotSize, direction;
+        printf("\nChoisissez la taille du pivot (3 ou 5) : ");
         scanf("%d", &pivotSize);
-    } while (pivotSize != 3 && pivotSize != 5);
+        printf("Choisissez la direction du pivot (1 pour gauche, 2 pour droite) : ");
+        scanf("%d", &direction);
 
-    // Boucle principale du jeu
-    while (true) {
-        // Vérifier si le nombre de tours est un multiple de PIVOT_ROTATION_INTERVAL pour permettre la rotation
-        bool canRotate = turnCount % PIVOT_ROTATION_INTERVAL == 0;
-
-        // Demander à l'utilisateur de choisir le pivot
-        int pivotRow, pivotCol;
-        do {
-            printf("Choisissez la position du pivot (ligne colonne) : ");
-            scanf("%d %d", &pivotRow, &pivotCol);
-        } while (!isValidInput(pivotRow, pivotCol) || board[pivotRow][pivotCol] == ' ');
-
-        // Vérifier si le pivot est dans les limites du plateau
-        if (pivotRow - pivotSize / 2 < 0 || pivotRow + pivotSize / 2 >= SIZE ||
-            pivotCol - pivotSize / 2 < 0 || pivotCol + pivotSize / 2 >= SIZE) {
-            printf("Le pivot est en dehors des limites du plateau.\n");
-            continue;
+        // Appliquer le pivot à gauche
+        if (direction == 1) {
+            for (int i = 0; i < pivotSize; i++) {
+                for (int j = 0; j < ha; j++) {
+                    char temp = tab[j][column - i];
+                    tab[j][column - i] = tab[j][column];
+                    tab[j][column] = temp;
+                }
+            }
         }
-
-        // Demander à l'utilisateur de choisir le sens de rotation
-        char direction;
-        do {
-            printf("Choisissez le sens de rotation (D pour droite, G pour gauche) : ");
-            scanf(" %c", &direction);
-        } while (direction != 'D' && direction != 'G');
-
-        // Effectuer la rotation si possible
-        if (canRotate) {
-            rotatePieces(board, pivotRow, pivotCol, pivotSize, direction);
-        } else {
-            printf("La rotation n'est pas autorisée à ce tour.\n");
+            // Appliquer le pivot à droite
+        else if (direction == 2) {
+            for (int i = 0; i < pivotSize; i++) {
+                for (int j = 0; j < ha; j++) {
+                    char temp = tab[j][column + i];
+                    tab[j][column + i] = tab[j][column];
+                    tab[j][column] = temp;
+                }
+            }
         }
-
-        // Afficher le plateau mis à jour
-        printf("Plateau de jeu après rotation :\n");
-        printBoard(board);
-
-        // Vérifier s'il y a une victoire
-        if (checkVictory(board, pivotRow, pivotCol, player == 1 ? 'X' : 'O')) {
-            printf("Le joueur %d a gagné !\n", player);
-            break;
-        }
-
-        // Passer au prochain joueur
-        player = player == 1 ? 2 : 1;
-        turnCount++;
     }
+
+    return column;
+}
+
+
+void fill(int ha, int la, char** tab, int column) {
+    // Fonction pour appliquer la gravité sur UNE COLONNE UNIQUEMENT
+    int buffer, cond;
+    do{
+        cond=0;
+        for (int i=0; i<ha-1; i++){
+            if(tab[i+1][column]==' ' && tab[i][column]!=' ' && tab[i][column]!= '+'){ //no gravity for '+'
+                cond=1;
+                buffer=tab[i+1][column];
+                tab[i+1][column]=tab[i][column];
+                tab[i][column]=buffer;
+            }
+        }
+    } while(cond);
+}
+
+
+int main(){
+    int n;
+    int tour=1; //permet d'alterner le joueur
+    int la, ha; // Variables pour la largeur et la hauteur du plateau
+    char nogravity; // if nogravity = y, then there will be the 4 nogravity slots
+    printf("\nBienvenue à \033[31mCY-Connect\033[0m ! Commençons par choisir les paramètres du jeu. \n\nPetite particularité dans ce programme : il y la possibilité de jouer avec des cases \033[35msans gravité\033[0m (symbolisées par '\033[40m + \033[0m'). \nSouhaites-tu jouer avec ces cases ?\ny: oui          n: non\n");
+    do{ //play with or without nograv slots
+        scanf(" %c", &nogravity);
+        if (nogravity != 'y' && nogravity != 'n') {
+            printf("Merci d'entrer une valeur valide ('y' ou 'n').\n");
+        }
+    }while(nogravity!='y' && nogravity!='n');
+
+
+    printf("\nTu peux choisir le nombre de \033[35mcases à aligner\033[0m pour être gagnant :\n");
+    scanf("%d",&n);
+
+
+    printf("\nLa largeur doit être comprise entre \033[31m8\033[0m et \033[31m%d\033[0m.", LA);
+    do{
+        printf("\nChoisis la \033[35mlargeur\033[0m du plateau : \n");
+        scanf("%d", &la);
+    } while(la < 8 || la > LA);
+
+    printf("\nLa hauteur doit être comprise entre \033[31m6\033[0m et \033[31m%d\033[0m.", HA);
+    do{
+        printf("\nChoisis la \033[35mhauteur\033[0m du plateau : \n");
+        scanf("%d", &ha);
+    } while(ha < 6 || ha > HA);
+
+
+#if 0
+    char* addr=malloc(sizeof(char)*ha*la);
+    char (*tab)[la] = (char (*)[la])addr;
+#endif
+
+    char** tab = malloc(sizeof(char*)*ha);     //creates the array for the game
+
+    if (tab == NULL) {
+        printf("malloc error\n");
+        return 0;
+    }
+
+    for (int j=0; j<ha; j++){
+        tab[j] = malloc(sizeof(char)*la);
+        if (tab == NULL) {
+            printf("malloc error\n");
+            return 0;
+        }
+    }
+
+    for (int i=0; i<ha; i++){
+        for (int j=0; j<la; j++){
+            tab[i][j]=' ';          //initializes the entire array with spaces, then puts the no-gravity slots
+        }
+    }
+
+    if (nogravity == 'y'){
+        tab[0][0]='+';
+        tab[0][la-1]='+';
+        tab[ha-1][0]='+';
+        tab[ha-1][la-1]='+';
+    }
+
+    printf("\n\n\n\nC'est parti ! La partie va commencer. Amuse-toi bien ;)\n\n\n\n");
+    sleep(3);
+
+    do{
+        displayer(ha, la, tab);
+        fill(ha, la, tab, choix( tour,  ha,  la, *tab));
+        tour++;
+    }while(align4(n, ha, la, tab) && notfull(ha, la, tab)); //verifies the two conditions to end the game
 
     return 0;
 }
