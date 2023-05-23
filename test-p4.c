@@ -18,7 +18,10 @@ void displayer(int ha, int la, char **tab){ //fix esthétique ═ ║ ═ ╔ �
     for (int i=0; i<ha-1; i++){
         for (int j=0; j<la; j++){    //loop for tab values + colors (between lines)
             if(tab[i][j]=='x'){
-                printf("║ \033[31m%c\033[0m ",tab[i][j]); //light blue
+                printf("║ \033[31m%c\033[0m ",tab[i][j]); //red
+            }
+            else if(tab[i][j]=='+'){ 
+                printf("║ \033[40m%c\033[0m ",tab[i][j]); //black bg
             }
             else{ 
                 printf("║ \033[36m%c\033[0m ",tab[i][j]); //light blue
@@ -35,7 +38,10 @@ void displayer(int ha, int la, char **tab){ //fix esthétique ═ ║ ═ ╔ �
 
     for (int j=0; j<la; j++){    //loop for tab values + colors (between lines) (last line)
         if(tab[ha-1][j]=='x'){
-            printf("║ \033[31m%c\033[0m ",tab[ha-1][j]); //light blue
+            printf("║ \033[31m%c\033[0m ",tab[ha-1][j]); //red
+        }
+        else if(tab[ha-1][j]=='+'){
+            printf("║ \033[40m%c\033[0m ",tab[ha-1][j]); //red
         }
         else{
             printf("║ \033[36m%c\033[0m ",tab[ha-1][j]); //light blue
@@ -172,7 +178,7 @@ void fill(int ha, int la, char** tab, int column){ //applies gravity on ONE COLU
     do{
         cond=0;
         for (int i=0; i<ha-1; i++){
-            if(tab[i+1][column]==' ' && tab[i][column]!=' '){
+            if(tab[i+1][column]==' ' && tab[i][column]!=' ' && tab[i][column]!= '+'){
                 cond=1;
                 buffer=tab[i+1][column];
                 tab[i+1][column]=tab[i][column];
@@ -183,23 +189,22 @@ void fill(int ha, int la, char** tab, int column){ //applies gravity on ONE COLU
 }
 
 int main(){
-    printf("Choisis le nombre de cases à aligner pour être gagnant :\n");
+    printf("Bienvenue à \033[31mCY-Connect\033[0m ! \nPetite particularité dans ce jeu : il y a des cases \033[35msans gravité\033[0m ( symbolisées par '\033[40m+\033[0m').\n\nTu peux choisir le nombre de \033[35mcases à aligner\033[0m pour être gagnant :\n");
     int n;
-
     scanf("%d",&n);
     int tour=1; //permet d'alterner le joueur
 
     int la, ha; // Variables pour la largeur et la hauteur du plateau
 
-    printf("\nLa largeur doit être comprise entre 8 et %d.", LA);
+    printf("\nLa largeur doit être comprise entre \033[31m8\033[0m et \033[31m%d\033[0m.", LA);
     do{
-        printf("\nChoisissez la largeur du plateau : \n");
+        printf("\nChoisis la \033[35mlargeur\033[0m du plateau : \n");
         scanf("%d", &la);
     } while(la < 8 || la > LA);
 
-    printf("\nLa hauteur doit être comprise entre 6 et %d.", HA);
+    printf("\nLa hauteur doit être comprise entre \033[31m6\033[0m et \033[31m%d\033[0m.", HA);
     do{
-        printf("\nChoisissez la hauteur du plateau : \n");
+        printf("\nChoisis la \033[35mhauteur\033[0m du plateau : \n");
         scanf("%d", &ha);
     } while(ha < 6 || ha > HA);
 
@@ -208,7 +213,7 @@ int main(){
     char (*tab)[la] = (char (*)[la])addr;
     #endif
 
-    char** tab = malloc(sizeof(char*)*ha);
+    char** tab = malloc(sizeof(char*)*ha);     //creates the array for the game
 
     if (tab == NULL) {
         printf("malloc error\n");
@@ -223,18 +228,23 @@ int main(){
         }
     }
 
-
     for (int i=0; i<ha; i++){
         for (int j=0; j<la; j++){
-            tab[i][j]=' '; //spacebar in ascii
+            tab[i][j]=' ';          //initializes the entire array with spaces, then puts the no-gravity slots
         }
     }
+    tab[0][0]='+';
+    tab[0][la-1]='+';
+    tab[ha-1][0]='+';
+    tab[ha-1][la-1]='+';
+
+    printf("C'est parti ! La partie va commencer. Amuse-toi bien ;)\n\n\n\n");
+    sleep(3);
 
     do{
         displayer(ha, la, tab);
         fill(ha, la, tab, choix(tour, ha, la ,tab));
         tour++;
-        printf("tour suivant\n");
     }while(align4(n, ha, la, tab) && notfull(ha, la, tab)); //verifies the two conditions to end the game
 
     return 0;
