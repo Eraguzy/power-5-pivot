@@ -21,7 +21,7 @@ void displayer(int ha, int la, char **tab){ //fix esthétique ═ ║ ═ ╔ �
                 printf("║ \033[31m%c\033[0m ",tab[i][j]); //red
             }
             else if(tab[i][j]=='+'){ 
-                printf("║ \033[40m%c\033[0m ",tab[i][j]); //black bg
+                printf("║\033[40m %c \033[0m",tab[i][j]); //black bg
             }
             else{ 
                 printf("║ \033[36m%c\033[0m ",tab[i][j]); //light blue
@@ -41,7 +41,7 @@ void displayer(int ha, int la, char **tab){ //fix esthétique ═ ║ ═ ╔ �
             printf("║ \033[31m%c\033[0m ",tab[ha-1][j]); //red
         }
         else if(tab[ha-1][j]=='+'){
-            printf("║ \033[40m%c\033[0m ",tab[ha-1][j]); //red
+            printf("║\033[40m %c \033[0m",tab[ha-1][j]); //red
         }
         else{
             printf("║ \033[36m%c\033[0m ",tab[ha-1][j]); //light blue
@@ -76,11 +76,9 @@ int endgame(char cas, int ha, int la, char** tab){
 }
 
 int notfull(int ha, int la, char ** tab){ //checks every round if the array is fully filled
-    for (int i=0; i<ha; i++){
-        for (int j=0; j<la; j++){
-            if(tab[i][j]==32){
-                return 1;
-            }
+    for (int j=0; j<la; j++){
+        if(tab[0][j]==32){
+            return 1;
         }
     }
     displayer(ha, la, tab);
@@ -178,7 +176,7 @@ void fill(int ha, int la, char** tab, int column){ //applies gravity on ONE COLU
     do{
         cond=0;
         for (int i=0; i<ha-1; i++){
-            if(tab[i+1][column]==' ' && tab[i][column]!=' ' && tab[i][column]!= '+'){
+            if(tab[i+1][column]==' ' && tab[i][column]!=' ' && tab[i][column]!= '+'){ //no gravity for '+'
                 cond=1;
                 buffer=tab[i+1][column];
                 tab[i+1][column]=tab[i][column];
@@ -189,12 +187,22 @@ void fill(int ha, int la, char** tab, int column){ //applies gravity on ONE COLU
 }
 
 int main(){
-    printf("Bienvenue à \033[31mCY-Connect\033[0m ! \nPetite particularité dans ce jeu : il y a des cases \033[35msans gravité\033[0m ( symbolisées par '\033[40m+\033[0m').\n\nTu peux choisir le nombre de \033[35mcases à aligner\033[0m pour être gagnant :\n");
     int n;
-    scanf("%d",&n);
     int tour=1; //permet d'alterner le joueur
-
     int la, ha; // Variables pour la largeur et la hauteur du plateau
+    char nogravity; // if nogravity = y, then there will be the 4 nogravity slots
+    printf("\nBienvenue à \033[31mCY-Connect\033[0m ! Commençons par choisir les paramètres du jeu. \n\nPetite particularité dans ce programme : il y la possibilité de jouer avec des cases \033[35msans gravité\033[0m (symbolisées par '\033[40m + \033[0m'). \nSouhaites-tu jouer avec ces cases ?\ny: oui          n: non\n");
+    do{ //play with or without nograv slots
+        scanf(" %c", &nogravity);
+        if (nogravity != 'y' && nogravity != 'n') {
+            printf("Merci d'entrer une valeur valide ('y' ou 'n').\n"); 
+        }
+    }while(nogravity!='y' && nogravity!='n');
+
+
+    printf("\nTu peux choisir le nombre de \033[35mcases à aligner\033[0m pour être gagnant :\n");
+    scanf("%d",&n);
+
 
     printf("\nLa largeur doit être comprise entre \033[31m8\033[0m et \033[31m%d\033[0m.", LA);
     do{
@@ -207,6 +215,7 @@ int main(){
         printf("\nChoisis la \033[35mhauteur\033[0m du plateau : \n");
         scanf("%d", &ha);
     } while(ha < 6 || ha > HA);
+
 
     #if 0
     char* addr=malloc(sizeof(char)*ha*la);
@@ -233,12 +242,15 @@ int main(){
             tab[i][j]=' ';          //initializes the entire array with spaces, then puts the no-gravity slots
         }
     }
-    tab[0][0]='+';
-    tab[0][la-1]='+';
-    tab[ha-1][0]='+';
-    tab[ha-1][la-1]='+';
 
-    printf("C'est parti ! La partie va commencer. Amuse-toi bien ;)\n\n\n\n");
+    if (nogravity == 'y'){
+        tab[0][0]='+';
+        tab[0][la-1]='+';
+        tab[ha-1][0]='+';
+        tab[ha-1][la-1]='+';
+    }
+
+    printf("\n\n\n\nC'est parti ! La partie va commencer. Amuse-toi bien ;)\n\n\n\n");
     sleep(3);
 
     do{
