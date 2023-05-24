@@ -18,6 +18,7 @@
     int align4(int n, int lines, int columns, char **tab);
     int loadGame(int lines, int columns, char** tab);
     void saveGame(int lines, int columns, char** tab, int round);
+    void pivotBoard(int lines, int columns, char** tab);
     int choice(int round, int lines, int columns, char **tab);
     void fill(int lines, int columns, char** tab, int column);
 
