@@ -19,4 +19,6 @@
 
     int choice(int round, int lines, int columns, char **tab);
     void fill(int lines, int columns, char** tab, int column);
+
+    void emptybuffer(void);
 #endif

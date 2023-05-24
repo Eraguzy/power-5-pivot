@@ -7,6 +7,7 @@ int choice(int round, int lines, int columns, char **tab){
         do{
             printf("\nIt's player 1's turn ! (\033[31mx\033[0m)\nwhich column are you choosing ?\n");
             scanf(" %d",&column);
+            emptybuffer();
             column-=1; //mismatch btw array index and display (range 0-6 and range 1-7)
         }while((column<0 || column>=columns) || tab[0][column]!=' ');
         tab[0][column]='x';
@@ -15,6 +16,7 @@ int choice(int round, int lines, int columns, char **tab){
         do{
             printf("\nIt's player 1's turn ! (\033[36mo\033[0m)\nwhich column are you choosing ?\n");
             scanf(" %d",&column);
+            emptybuffer();
             column-=1;
         }while((column<0 || column>=columns) || tab[0][column]!=' ');
         tab[0][column]='o';

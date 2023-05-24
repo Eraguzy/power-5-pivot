@@ -5,9 +5,12 @@ int main(){
     int round=1; //allows you to alternate the player
     int columns, lines; // Variables for columns width and columns height of the tray
     char nogravity; // if nogravity = y, then there will be the 4 nogravity slots
+    int checkscanf;
     printf("\nWelcome to \033[31mCY-Connect\033[0m ! Let's start by choosing the game settings. \n\nSpecial feature in this program  : you can play with squares that have \033[35mno gravity\033[0m (looks like this : '\033[40m + \033[0m'). \nWould you like to play with these ?\ny: yes          n: no\n");
     do{ //play with or without nograv slots
-        scanf(" %c", &nogravity);
+        checkscanf=scanf(" %c", &nogravity);
+        emptybuffer();
+
         if (nogravity != 'y' && nogravity != 'n') {
             printf("Please enter a valid value ('y' ou 'n').\n"); 
         }
@@ -15,19 +18,23 @@ int main(){
 
 
     printf("\nYou can choose the number of \033[35mslots to align\033[0m to win:\n");
-    scanf("%d",&n);
+    scanf(" %d",&n);
+    emptybuffer();
+
 
 
     printf("\nThe width must be between \033[31m8\033[0m and \033[31m%d\033[0m.", ROWO);
     do{
         printf("\nChoose the number of \033[35mcolumns\033[0m of the tray : \n");
         scanf("%d", &columns);
+        emptybuffer();
     } while(columns < 8 || columns > ROWO);
 
     printf("\nThe height must be between \033[31m6\033[0m and \033[31m%d\033[0m.", COLO);
     do{
         printf("\nChoose the number of \033[35mlines\033[0m of the tray : \n");
         scanf("%d", &lines);
+        emptybuffer();
     } while(lines < 6 || lines > COLO);
 
 
