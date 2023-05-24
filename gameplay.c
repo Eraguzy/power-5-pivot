@@ -1,28 +1,29 @@
 #include "header.h"
 
 
-int choice(int round, int lines, int columns, char **tab){ 
-    int column;
+int choice(int round, int lines, int columns, char **tab){ //asks the player (1 or 2) what columns he wants to play and returns this column //needs 'line' and 'column' parameters to check is the column is playable
+    int column, checkscanf;
     if(round%2!=0){
         do{
             printf("\nIt's player 1's turn ! (\033[31mx\033[0m)\nwhich column are you choosing ?\n");
-            scanf(" %d",&column);
+            checkscanf=scanf(" %d",&column);
             emptybuffer();
             column-=1; //mismatch btw array index and display (range 0-6 and range 1-7)
-        }while((column<0 || column>=columns) || tab[0][column]!=' ');
+        }while(checkscanf!=1 || ((column<0 || column>=columns) || tab[0][column]!=' ')); //only plays if very top slot is not filled
         tab[0][column]='x';
     }
     if(round%2==0){
         do{
             printf("\nIt's player 1's turn ! (\033[36mo\033[0m)\nwhich column are you choosing ?\n");
-            scanf(" %d",&column);
+            checkscanf=scanf(" %d",&column);
             emptybuffer();
             column-=1;
-        }while((column<0 || column>=columns) || tab[0][column]!=' ');
+        }while(checkscanf!=1 || (column<0 || column>=columns) || tab[0][column]!=' ');
         tab[0][column]='o';
     }
-    printf("Do you want to save the game ? (y/n) : ");
+    
     char saveChoice;
+    printf("Do you want to save the game ? (y/n) : ");
     scanf(" %c", &saveChoice);
 
     if (saveChoice == 'y'){
@@ -33,7 +34,7 @@ int choice(int round, int lines, int columns, char **tab){
     return column;
 }
 
-void fill(int lines, int columns, char** tab, int column){ 
+void fill(int lines, int columns, char** tab, int column){ //applies gravity on one column only
     int buffer, cond;
     do{
         cond=0;
@@ -110,135 +111,6 @@ void pivotBoard(int lines, int columns, char** tab) {
                             // Clear the original position
                             tab[i][j] = ' ';
                         }
-                    }
-                }
-            }
-        } else {
-            printf("Invalid pivot direction. Board not rotated.\n");
-        }
-    } else {
-        printf("Invalid pivot size. Board not rotated.\n");
-    }
-}
-
-void pivotBoard(int lines, int columns, char** tab) {
-    int pivotSize;
-    int pivotRow, pivotColumn;
-    char pivotDirection;
-    int i, j;
-
-    printf("\nDo you want to pivot the board?\n");
-    printf("Choose the size of the pivot (3 or 5): ");
-    scanf("%d", &pivotSize);
-
-    printf("Choose the row index of the pivot (0-%d): ", lines - 1);
-    scanf("%d", &pivotRow);
-
-    printf("Choose the column index of the pivot (0-%d): ", columns - 1);
-    scanf("%d", &pivotColumn);
-
-    printf("Choose the direction to rotate the pieces:\n");
-    printf("Enter 'r' for right or 'l' for left: ");
-    scanf(" %c", &pivotDirection);
-
-    if (pivotSize == 3 || pivotSize == 5) {
-        // Calculate the boundaries of the pivot square
-        int pivotStartRow = pivotRow - pivotSize / 2;
-        int pivotEndRow = pivotStartRow + pivotSize;
-        int pivotStartColumn = pivotColumn - pivotSize / 2;
-        int pivotEndColumn = pivotStartColumn + pivotSize;
-
-        if (pivotDirection == 'r') {
-            // Rotate the pieces outside the pivot square to the right
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
-                        // Rotate the piece to the right
-                        if (tab[i][j] == 'X')
-                            tab[i][j] = 'Y';
-                        else if (tab[i][j] == 'Y')
-                            tab[i][j] = 'Z';
-                        else if (tab[i][j] == 'Z')
-                            tab[i][j] = 'X';
-                    }
-                }
-            }
-        } else if (pivotDirection == 'l') {
-            // Rotate the pieces outside the pivot square to the left
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
-                        // Rotate the piece to the left
-                        if (tab[i][j] == 'X')
-                            tab[i][j] = 'Z';
-                        else if (tab[i][j] == 'Y')
-                            tab[i][j] = 'X';
-                        else if (tab[i][j] == 'Z')
-                            tab[i][j] = 'Y';
-                    }
-                }
-            }
-        } else {
-            printf("Invalid pivot direction. Board not rotated.\n");
-        }
-    } else {
-        printf("Invalid pivot size. Board not rotated.\n");
-    }
-}
-void pivotBoard(int lines, int columns, char** tab) {
-    int pivotSize;
-    int pivotRow, pivotColumn;
-    char pivotDirection;
-    int i, j;
-
-    printf("\nDo you want to pivot the board?\n");
-    printf("Choose the size of the pivot (3 or 5): ");
-    scanf("%d", &pivotSize);
-
-    printf("Choose the row index of the pivot (0-%d): ", lines - 1);
-    scanf("%d", &pivotRow);
-
-    printf("Choose the column index of the pivot (0-%d): ", columns - 1);
-    scanf("%d", &pivotColumn);
-
-    printf("Choose the direction to rotate the pieces:\n");
-    printf("Enter 'r' for right or 'l' for left: ");
-    scanf(" %c", &pivotDirection);
-
-    if (pivotSize == 3 || pivotSize == 5) {
-        // Calculate the boundaries of the pivot square
-        int pivotStartRow = pivotRow - pivotSize / 2;
-        int pivotEndRow = pivotStartRow + pivotSize;
-        int pivotStartColumn = pivotColumn - pivotSize / 2;
-        int pivotEndColumn = pivotStartColumn + pivotSize;
-
-        if (pivotDirection == 'r') {
-            // Rotate the pieces outside the pivot square to the right
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
-                        // Rotate the piece to the right
-                        if (tab[i][j] == 'X')
-                            tab[i][j] = 'Y';
-                        else if (tab[i][j] == 'Y')
-                            tab[i][j] = 'Z';
-                        else if (tab[i][j] == 'Z')
-                            tab[i][j] = 'X';
-                    }
-                }
-            }
-        } else if (pivotDirection == 'l') {
-            // Rotate the pieces outside the pivot square to the left
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
-                        // Rotate the piece to the left
-                        if (tab[i][j] == 'X')
-                            tab[i][j] = 'Z';
-                        else if (tab[i][j] == 'Y')
-                            tab[i][j] = 'X';
-                        else if (tab[i][j] == 'Z')
-                            tab[i][j] = 'Y';
                     }
                 }
             }

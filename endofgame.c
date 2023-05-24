@@ -1,10 +1,10 @@
 #include "header.h"
 
 
-int endgame(char slot, int lines, int columns, char** tab){
+int endgame(char slot, int lines, int columns, char** tab){ //ends the game when the function is called by align
     displayer(lines, columns, tab);
     if(slot=='x'){
-        printf("player 1 (\033[31mx\033[0m) wins !\n");
+        printf("player 1 (\033[31mx\033[0m) wins !\n"); //slot determines the winner : called by align when the selected slot determines a win condition
     }
     else{
         printf("player 2 (\033[36mo\033[0m) wins !\n");
@@ -15,15 +15,15 @@ int endgame(char slot, int lines, int columns, char** tab){
 int notfull(int lines, int columns, char ** tab){ //checks every round if the array is fully filled
     for (int j=0; j<columns; j++){
         if(tab[0][j]==32){
-            return 1;
+            return 1; //game goes on
         }
     }
     displayer(lines, columns, tab);
     printf("Draw !\n");
-    return 0;
+    return 0; //game stops
 }
 
-int align4(int n, int lines, int columns, char **tab) {
+int align(int n, int lines, int columns, char **tab) { //checks if there are n slots aligned according to the game rules 
     int count = 0;
 
     for (int i = 0; i < lines; i++) {
@@ -83,5 +83,5 @@ int align4(int n, int lines, int columns, char **tab) {
             }
         }
     }
-    return 1;
+    return 1; //goes on or stops if it finds out that n slots are aligned
 }

@@ -1,6 +1,6 @@
 #include "header.h"
 
-void displayer(int lines, int columns, char **tab){ 
+void displayer(int lines, int columns, char **tab){ //displays the current state of the game
     printf("╔═══");
     for (int i=0; i<columns-1; i++){
         printf("╦═══");              //first line
