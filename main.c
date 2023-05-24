@@ -6,6 +6,19 @@ int main(){
     int columns, lines; // Variables for columns width and columns height of the tray
     char nogravity; // if nogravity = y, then there will be the 4 nogravity slots
     int checkscanf;
+    char choice;
+    printf("\nWelcome to CY-Connect!\n");
+    printf("Do you want to continue a previous game? (y/n): ");
+    scanf(" %c", &choice);
+    if (choice == 'y'){
+        int success = loadGame(lines, columns, tab);
+        if (!succes){
+            // If no game has been loaded, we start a new game
+            printf("Starting a new game...\n");
+        }
+    } else{
+        printf("Starting a new game...\n");
+    }
     printf("\nWelcome to \033[31mCY-Connect\033[0m ! Let's start by choosing the game settings. \n\nSpecial feature in this program  : you can play with squares that have \033[35mno gravity\033[0m (looks like this : '\033[40m + \033[0m'). \nWould you like to play with these ?\ny: yes          n: no\n");
     do{ //play with or without nograv slots
         checkscanf=scanf(" %c", &nogravity);
