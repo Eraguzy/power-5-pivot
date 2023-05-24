@@ -167,6 +167,16 @@ int choice(int round, int lines, int columns, char **tab){ //takes player's colu
         }while((column<0 || column>=columns) || tab[0][column]!=' ');
         tab[0][column]='o';
     }
+     // Demande au joueur s'il souhaite sauvegarder la partie
+    printf("Do you want to save the game? (y/n): ");
+    char saveChoice;
+    scanf(" %c", &saveChoice);
+
+    if (saveChoice == 'y') {
+        saveGame(round, lines, columns, tab);
+        printf("Game saved. Exiting...\n");
+        exit(0);  // Quitte le jeu après la sauvegarde
+    }
     return column;
 }
 
@@ -185,12 +195,54 @@ void fill(int lines, int columns, char** tab, int column){ //applies gravity on 
     } while(cond);
 }
 
+int loadGame(int lines, int columns, char** tab) {
+    FILE* file = fopen("savegame.txt", "r");  // Ouvre le fichier de sauvegarde en lecture
+    if (file == NULL) {
+        printf("No saved game found.\n");
+        return 0;  // Aucune partie sauvegardée n'a été trouvée
+    }
+
+    // Lit le tableau à partir du fichier
+    for (int i = 0; i < lines; i++) {
+        for (int j = 0; j < columns; j++) {
+            fscanf(file, " %c", &tab[i][j]);
+        }
+    }
+
+    fclose(file);  // Ferme le fichier
+
+    printf("Previous game loaded.\n");
+    return 1;  // Partie chargée avec succès
+}
+
+void saveGame(int lines, int columns, char** tab, int round) {
+    FILE* file = fopen("savegame.txt", "w");  // Ouvre le fichier de sauvegarde en écriture
+
+    // Enregistre le tableau dans le fichier.
+
+
 int main(){
     int n;
     int round=1; //allows you to alternate the player
     int columns, lines; // Variables for columns width and columns height of the tray
     char nogravity; // if nogravity = y, then there will be the 4 nogravity slots
+    printf("\nWelcome to CY-Connect!\n");
+    printf("Do you want to continue a previous game? (y/n): ");
+    char choice;
+    scanf(" %c", &choice);
+
+    if (choice == 'y') {
+        int success = loadGame(lines, columns, tab);
+        if (!success) {
+            // Si aucune partie n'a été chargée, nous commençons une nouvelle partie
+            printf("Starting a new game...\n");
+        }
+    } else {
+        printf("Starting a new game...\n");
+    }
+
     printf("\nWelcome to \033[31mCY-Connect\033[0m ! Let's start by choosing the game settings. \n\nSpecial feature in this program  : you can play with squares that have \033[35mno gravity\033[0m (looks like this : '\033[40m + \033[0m'). \nWould you like to play with these ?\ny: yes          n: no\n");
+
     do{ //play with or without nograv slots
         scanf(" %c", &nogravity);
         if (nogravity != 'y' && nogravity != 'n') {
@@ -257,6 +309,8 @@ int main(){
         fill(lines, columns, tab, choice(round, lines, columns ,tab));
         round++;
     }while(align4(n, lines, columns, tab) && notfull(lines, columns, tab)); //verifies the two conditions to end the game
+
+    
 
     return 0;
 }
