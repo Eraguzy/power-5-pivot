@@ -1,26 +1,51 @@
 #include "header.h"
 
-int loadGame(int lines, int columns, char** tab) {
-    FILE* file = fopen("savegame.txt", "r");  // Ouvre le fichier de sauvegarde en lecture
-    if (file == NULL) {
-        printf("No saved game found.\n");
-        return 0;  // Aucune partie sauvegardée n'a été trouvée
-    }
+void saveGame(int lines, int columns, int round, int align, char** tab) {
+    FILE* file = fopen("savegame.txt", "w");  // opens the save file (write)
 
-    // Lit le tableau à partir du fichier
-    for (int i = 0; i < lines; i++) {
+    fprintf(file, " %d %d %d %d\n", lines, columns, align, round);
+
+    for (int i = 0; i < lines; i++) { // writes the array
         for (int j = 0; j < columns; j++) {
-            fscanf(file, " %c", &tab[i][j]);
+            fprintf(file, "%c", tab[i][j]);
         }
     }
 
-    fclose(file);  // Ferme le fichier
-
-    printf("Previous game loaded.\n");
-    return 1;  // Partie chargée avec succès
+    fclose(file);
+    printf("File saved. You will be able to load the game later.\n");
+    exit(0);
 }
 
-void saveGame(int lines, int columns, char** tab, int round) {
-    FILE* file = fopen("savegame.txt", "w");  // Ouvre le fichier de sauvegarde en écriture
+void loadGame(int* lines, int* columns, int* round, int* align, char*** tab) {
+    FILE* file = fopen("savegame.txt", "r");  // ouvre le fichier de sauvegarde en lecture
+    if (file == NULL) {
+        printf("No saved game found. Please put your save file in the right directory and reload the game.\n");
+        exit(0);
+    }
+
+    fscanf(file, " %d %d %d %d\n", lines, columns, align, round);
+
+    *tab = malloc(sizeof(char*) * (*lines));  // alloue de l'espace pour le tableau
+    if (*tab == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+
+    for (int j = 0; j < *lines; j++) {
+        (*tab)[j] = malloc(sizeof(char) * (*columns));
+        if ((*tab)[j] == NULL) {
+            printf("malloc error\n");
+            exit(0);
+        }
+    }
+
+    for (int i = 0; i < *lines; i++) {
+        for (int j = 0; j < *columns; j++) {
+            fscanf(file, "%c", &((*tab)[i][j]));
+        }
+    }
+
+    fclose(file);
+
+    printf("\nPrevious game loaded.\nSize : %dx%d.\nWin condition : %d slots.\n",*columns, *lines, *align);
 }
-    // Enregistre le tableau dans le fichier.

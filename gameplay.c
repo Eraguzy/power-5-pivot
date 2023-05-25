@@ -1,13 +1,20 @@
 #include "header.h"
 
 
-int choice(int round, int lines, int columns, char **tab){ //asks the player (1 or 2) what columns he wants to play and returns this column //needs 'line' and 'column' parameters to check is the column is playable
+int choice(int round, int lines, int columns, int n, char **tab){ //asks the player (1 or 2) what columns he wants to play and returns this column //needs 'line' and 'column' parameters to check is the column is playable
     int column, checkscanf;
     if(round%2!=0){
         do{
             printf("\nIt's player 1's turn ! (\033[31mx\033[0m)\nwhich column are you choosing ?\n");
             checkscanf=scanf(" %d",&column);
             emptybuffer();
+
+            if (column == 999){
+                saveGame(lines, columns, round, n, tab);
+                printf("Game saved. Exiting...\n");
+                exit(0);
+            }
+
             column-=1; //mismatch btw array index and display (range 0-6 and range 1-7)
         }while(checkscanf!=1 || ((column<0 || column>=columns) || tab[0][column]!=' ')); //only plays if very top slot is not filled
         tab[0][column]='x';
@@ -17,20 +24,20 @@ int choice(int round, int lines, int columns, char **tab){ //asks the player (1 
             printf("\nIt's player 1's turn ! (\033[36mo\033[0m)\nwhich column are you choosing ?\n");
             checkscanf=scanf(" %d",&column);
             emptybuffer();
+
+            if (column == 999){
+                saveGame(lines, columns, round, n, tab);
+                printf("Game saved. Exiting...\n");
+                exit(0);
+            }
+
             column-=1;
+
         }while(checkscanf!=1 || (column<0 || column>=columns) || tab[0][column]!=' ');
         tab[0][column]='o';
     }
-    
-    char saveChoice;
-    printf("Do you want to save the game ? (y/n) : ");
-    scanf(" %c", &saveChoice);
 
-    if (saveChoice == 'y'){
-        saveGame(round, lines, columns, tab);
-        printf("Game saved. Exiting...\n");
-        exit(0);
-    }
+
     return column;
 }
 

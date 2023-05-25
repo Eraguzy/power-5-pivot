@@ -18,8 +18,11 @@ antibug.o: antibug.c header.h
 save.o: save.c header.h
 	gcc -c save.c -o save.o
 
-cyconnect: main.o gameplay.o display.o endofgame.o antibug.o save.o
-	gcc main.o gameplay.o display.o endofgame.o antibug.o save.o -o cyconnect
+startgame.o: startgame.c header.h
+	gcc -c startgame.c -o startgame.o
+
+cyconnect: main.o gameplay.o display.o endofgame.o antibug.o save.o startgame.o
+	gcc main.o gameplay.o display.o endofgame.o antibug.o save.o startgame.o -o cyconnect
 
 clean: 
 	rm -f *.o
