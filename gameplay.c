@@ -111,7 +111,7 @@ int pivotBoard(int lines, int columns, char** tab) {
             // Rotate the pieces outside the pivot square to the right
             for (int i = 0; i < lines; i++) {
                 for (int j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
+                    if ((i > pivotStartRow || i <= pivotEndRow) || (j > pivotStartColumn || j <= pivotEndColumn)) {
                         // Calculate the new coordinates after rotation
                         int newRow = pivotRow + (j - pivotColumn);
                         int newColumn = pivotColumn - (i - pivotRow);
@@ -130,7 +130,7 @@ int pivotBoard(int lines, int columns, char** tab) {
             // Rotate the pieces outside the pivot square to the left
             for (int i = 0; i < lines; i++) {
                 for (int j = 0; j < columns; j++) {
-                    if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
+                    if ((i > pivotStartRow || i <= pivotEndRow) || (j > pivotStartColumn || j <= pivotEndColumn)) {
                         // Calculate the new coordinates after rotation
                         int newRow = pivotRow - (j - pivotColumn);
                         int newColumn = pivotColumn + (i - pivotRow);
