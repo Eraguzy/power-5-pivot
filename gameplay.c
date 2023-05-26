@@ -64,41 +64,43 @@ int pivotBoard(int lines, int columns, char** tab) {
 
     printf("Choose the size of the pivot (3 or 5):\n");
     do{
-        checkscanf=scanf(" %d", &pivotSize);
+        checkscanf = scanf(" %d", &pivotSize);
         emptybuffer();
-        if(checkscanf!=1 || (pivotSize != 3 && pivotSize != 5)) { //this part avoids bugs from scanf inputs
+        if(checkscanf != 1 || (pivotSize != 3 && pivotSize != 5)) { //this part avoids bugs from scanf inputs
             printf("Please enter a valid entry ('3' or '5').\n"); 
         }
-    }while(checkscanf!=1 || (pivotSize != 3 && pivotSize != 5));
+    } while(checkscanf != 1 || (pivotSize != 3 && pivotSize != 5));
 
 
-    printf("Choose the row index of the pivot (0-%d): \n", lines-1);
-    do{
-        checkscanf=scanf("%d", &pivotRow);
+    printf("Choose the row index of the pivot (1-%d): \n", lines);
+    do {
+        checkscanf = scanf("%d", &pivotRow);
         emptybuffer();
-        if(checkscanf!=1 || (pivotSize < 0 && pivotSize >= lines)) { //this part avoids bugs from scanf inputs
-            printf("Please enter a valid entry (between 0 and %d).\n", lines-1); 
+        pivotRow--;
+        if(checkscanf != 1 || (pivotRow < 0 && pivotRow >= lines)) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry (between 1 and %d).\n", lines); 
         }
-    }while(checkscanf!=1 || (pivotSize < 0 && pivotSize >= lines));
+    } while(checkscanf != 1 || (pivotRow < 0 || pivotRow >= lines));
 
 
-    printf("Choose the column index of the pivot (0-%d): ", columns-1);
-    do{
-        checkscanf=scanf("%d", &pivotColumn);
+    printf("Choose the column index of the pivot (1-%d): ", columns);
+    do {
+        checkscanf = scanf("%d", &pivotColumn);
+        pivotColumn--;
         emptybuffer();
-        if(checkscanf!=1 || (pivotSize < 0 && pivotSize >= columns)) { //this part avoids bugs from scanf inputs
-            printf("Please enter a valid entry (between 0 and %d).\n", columns-1); 
+        if(checkscanf != 1 || (pivotColumn < 0 && pivotColumn >= columns)) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry (between 1 and %d).\n", columns); 
         }
-    }while(checkscanf!=1 || (pivotSize < 0 && pivotSize >= columns));
+    } while(checkscanf != 1 || (pivotColumn < 0 || pivotColumn >= columns));
 
     printf("Choose the direction to rotate the slots:\nr: right (clockwise)          l: left (anticlockwise)\n");
-        do{
-        checkscanf=scanf(" %c", &pivotDirection);
+    do {
+        checkscanf = scanf(" %c", &pivotDirection);
         emptybuffer();
-        if(checkscanf!=1 || (pivotDirection != 'r' && pivotDirection != 'l')) { //this part avoids bugs from scanf inputs
+        if(checkscanf != 1 || (pivotDirection != 'r' && pivotDirection != 'l')) { //this part avoids bugs from scanf inputs
             printf("Please enter a valid entry ('r' or 'l').\n"); 
         }
-    }while(checkscanf!=1 || (pivotDirection != 'r' && pivotDirection != 'l'));
+    } while(checkscanf != 1 || (pivotDirection != 'r' && pivotDirection != 'l'));
 
     if (pivotSize == 3 || pivotSize == 5) {
         // Calculate the boundaries of the pivot square
@@ -107,69 +109,67 @@ int pivotBoard(int lines, int columns, char** tab) {
         int pivotStartColumn = pivotColumn - pivotSize / 2;
         int pivotEndColumn = pivotStartColumn + pivotSize;
 
-        //creates buffer
-        char** buffer = malloc(sizeof(char*) * (lines));     //creates the array for the game
+        // Creates buffer
+        char** buffer = malloc(sizeof(char*) * pivotSize);
         if (buffer == NULL) {
             printf("malloc error\n");
             exit(0);
         }
-        for (int j=0; j< lines; j++){
-            buffer[j] = malloc(sizeof(char) * (columns));  
+        for (int j = 0; j < pivotSize; j++) {
+            buffer[j] = malloc(sizeof(char) * pivotSize);
             if (buffer[j] == NULL) {
                 printf("malloc error\n");
-                exit(0);  
-            }
-        }
-  
-        int i=0, j=0;
-        if(pivotSize==3){
-            i=pivotRow-1;
-            j=pivotColumn-1;
-        }
-        else if(pivotSize==5){
-            i=pivotRow-2;
-            j=pivotColumn-2;
-        }
-        
-        for (int k = 0; k < pivotSize; i++, k++) {
-            for (int l = 0; l < pivotSize; j++, l++) {
-                buffer[k][l] = tab[i][j];            // Copier dans le buffer
+                exit(0);
             }
         }
 
-        i=0;
-        j=0;
+        // Initialize i and j
+        int i = pivotStartRow;
+        int j = pivotStartColumn;
+
+        for (int k = 0; k < pivotSize; k++) {
+            for (int l = 0; l < pivotSize; l++) {
+                buffer[k][l] = tab[i][j]; // Copy to the buffer
+                j++; // Increment j to move to the next column of tab
+            }
+            i++; // Increment i to move to the next row of tab
+            j = pivotStartColumn; // Reset j to the value of pivotStartColumn to go back to the first column of the pivot
+        }
+
+        i = pivotStartRow;
+        j = pivotStartColumn;
+        
         if (pivotDirection == 'r') {
             // Rotate the pieces inside the pivot square to the right
-            for (int k=0, i = pivotStartRow; i < pivotEndRow; i++, k++) {
-                for (int l=0, j = pivotStartColumn; j < pivotEndColumn; j++, l++) {
+            for (int k = 0; k < pivotSize; k++, i++) {
+                for (int l = 0; l < pivotSize; l++, j++) {
                     // Calculate the new coordinates after rotation
-                    int newRow = pivotRow + (j - pivotColumn);
-                    int newColumn = pivotColumn - (i - pivotRow);
-
-                    // Check if the new coordinates are within the bounds of the pivot square
-                    if (newRow >= pivotStartRow && newRow < pivotEndRow && newColumn >= pivotStartColumn && newColumn < pivotEndColumn) {
-                        // Move the piece to the new coordinates
-                        buffer[k][l] = tab[newRow][newColumn];
-                    }
+                    int newRow = pivotRow + (l - pivotColumn);
+                    int newColumn = pivotColumn - (k - pivotRow);
+                    // Move the piece to the new coordinates
+                    tab[newRow][newColumn] = buffer[i][j];
                 }
-            }
-        } else if (pivotDirection == 'l') {
-            // Rotate the pieces inside the pivot square to the left
-            for (int k=0, i = pivotStartRow; i < pivotEndRow; i++, k++) {
-                for (int l=0, j = pivotStartColumn; j < pivotEndColumn; j++, l++) {
-                    // Calculate the new coordinates after rotation
-                    int newRow = pivotRow - (j - pivotColumn);
-                    int newColumn = pivotColumn + (i - pivotRow);
-
-                    // Check if the new coordinates are within the bounds of the pivot square
-                    if (newRow >= pivotStartRow && newRow < pivotEndRow && newColumn >= pivotStartColumn && newColumn < pivotEndColumn) {
-                        // Move the piece to the new coordinates
-                        buffer[k][l] = tab[newRow][newColumn];
-                    }
-                }
+                j = pivotStartColumn; // Reset j to the value of pivotStartColumn for each new row
             }
         }
+        else if (pivotDirection == 'l') {
+            // Rotate the pieces inside the pivot square to the left
+            for (int k = 0; k < pivotSize; k++, i++) {
+                for (int l = 0; l < pivotSize; l++, j++) {
+                    // Calculate the new coordinates after rotation
+                    int newRow = pivotRow - (l - pivotColumn);
+                    int newColumn = pivotColumn + (k - pivotRow);
+                    // Move the piece to the new coordinates
+                    tab[newRow][newColumn] = buffer[i][j];
+                }
+                j = pivotStartColumn; // Reset j to the value of pivotStartColumn for each new row
+            }
+        }
+        for (int j = 0; j < pivotSize; j++) { // free buffer
+            free(buffer[j]);
+        }
+        free(buffer);
     }
+
     return pivotSize;
 }
