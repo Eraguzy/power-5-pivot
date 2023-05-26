@@ -107,41 +107,65 @@ int pivotBoard(int lines, int columns, char** tab) {
         int pivotStartColumn = pivotColumn - pivotSize / 2;
         int pivotEndColumn = pivotStartColumn + pivotSize;
 
-        if (pivotDirection == 'r') {
-            // Rotate the pieces outside the pivot square to the right
-            for (int i = 0; i < lines; i++) {
-                for (int j = 0; j < columns; j++) {
-                    if ((i > pivotStartRow || i <= pivotEndRow) || (j > pivotStartColumn || j <= pivotEndColumn)) {
-                        // Calculate the new coordinates after rotation
-                        int newRow = pivotRow + (j - pivotColumn);
-                        int newColumn = pivotColumn - (i - pivotRow);
+        //creates buffer
+        char** buffer = malloc(sizeof(char*) * (lines));     //creates the array for the game
+        if (buffer == NULL) {
+            printf("malloc error\n");
+            exit(0);
+        }
+        for (int j=0; j< lines; j++){
+            buffer[j] = malloc(sizeof(char) * (columns));  
+            if (buffer[j] == NULL) {
+                printf("malloc error\n");
+                exit(0);  
+            }
+        }
+  
+        int i=0, j=0;
+        if(pivotSize==3){
+            i=pivotRow-1;
+            j=pivotColumn-1;
+        }
+        else if(pivotSize==5){
+            i=pivotRow-2;
+            j=pivotColumn-2;
+        }
+        
+        for (int k = 0; k < pivotSize; i++, k++) {
+            for (int l = 0; l < pivotSize; j++, l++) {
+                buffer[k][l] = tab[i][j];            // Copier dans le buffer
+            }
+        }
 
-                        // Check if the new coordinates are within the bounds of the board
-                        if (newRow >= 0 && newRow < lines && newColumn >= 0 && newColumn < columns) {
-                            // Move the piece to the new coordinates
-                            tab[newRow][newColumn] = tab[i][j];
-                            // Clear the original position
-                            tab[i][j] = ' ';
-                        }
+        i=0;
+        j=0;
+        if (pivotDirection == 'r') {
+            // Rotate the pieces inside the pivot square to the right
+            for (int k=0, i = pivotStartRow; i < pivotEndRow; i++, k++) {
+                for (int l=0, j = pivotStartColumn; j < pivotEndColumn; j++, l++) {
+                    // Calculate the new coordinates after rotation
+                    int newRow = pivotRow + (j - pivotColumn);
+                    int newColumn = pivotColumn - (i - pivotRow);
+
+                    // Check if the new coordinates are within the bounds of the pivot square
+                    if (newRow >= pivotStartRow && newRow < pivotEndRow && newColumn >= pivotStartColumn && newColumn < pivotEndColumn) {
+                        // Move the piece to the new coordinates
+                        buffer[k][l] = tab[newRow][newColumn];
                     }
                 }
             }
         } else if (pivotDirection == 'l') {
-            // Rotate the pieces outside the pivot square to the left
-            for (int i = 0; i < lines; i++) {
-                for (int j = 0; j < columns; j++) {
-                    if ((i > pivotStartRow || i <= pivotEndRow) || (j > pivotStartColumn || j <= pivotEndColumn)) {
-                        // Calculate the new coordinates after rotation
-                        int newRow = pivotRow - (j - pivotColumn);
-                        int newColumn = pivotColumn + (i - pivotRow);
+            // Rotate the pieces inside the pivot square to the left
+            for (int k=0, i = pivotStartRow; i < pivotEndRow; i++, k++) {
+                for (int l=0, j = pivotStartColumn; j < pivotEndColumn; j++, l++) {
+                    // Calculate the new coordinates after rotation
+                    int newRow = pivotRow - (j - pivotColumn);
+                    int newColumn = pivotColumn + (i - pivotRow);
 
-                        // Check if the new coordinates are within the bounds of the board
-                        if (newRow >= 0 && newRow < lines && newColumn >= 0 && newColumn < columns) {
-                            // Move the piece to the new coordinates
-                            tab[newRow][newColumn] = tab[i][j];
-                            // Clear the original position
-                            tab[i][j] = ' ';
-                        }
+                    // Check if the new coordinates are within the bounds of the pivot square
+                    if (newRow >= pivotStartRow && newRow < pivotEndRow && newColumn >= pivotStartColumn && newColumn < pivotEndColumn) {
+                        // Move the piece to the new coordinates
+                        buffer[k][l] = tab[newRow][newColumn];
                     }
                 }
             }
