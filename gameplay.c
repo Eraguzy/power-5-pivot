@@ -56,25 +56,49 @@ void fill(int lines, int columns, char** tab, int column){ //applies gravity on 
     } while(cond);
 }
 
-void pivotBoard(int lines, int columns, char** tab) {
-    int pivotSize;
-    int pivotRow, pivotColumn;
-    char pivotDirection;
-    int i, j;
+int pivotBoard(int lines, int columns, char** tab) {
+    int checkscanf; //debug scanf
+    int pivotSize; // 3 or 5
+    int pivotRow, pivotColumn; //rows and columns index
+    char pivotDirection; //left or right
 
-    printf("\nDo you want to pivot the board?\n");
-    printf("Choose the size of the pivot (3 or 5): ");
-    scanf("%d", &pivotSize);
+    printf("Choose the size of the pivot (3 or 5):\n");
+    do{
+        checkscanf=scanf(" %d", &pivotSize);
+        emptybuffer();
+        if(checkscanf!=1 || (pivotSize != 3 && pivotSize != 5)) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry ('3' or '5').\n"); 
+        }
+    }while(checkscanf!=1 || (pivotSize != 3 && pivotSize != 5));
 
-    printf("Choose the row index of the pivot (0-%d): ", lines - 1);
-    scanf("%d", &pivotRow);
 
-    printf("Choose the column index of the pivot (0-%d): ", columns - 1);
-    scanf("%d", &pivotColumn);
+    printf("Choose the row index of the pivot (0-%d): \n", lines-1);
+    do{
+        checkscanf=scanf("%d", &pivotRow);
+        emptybuffer();
+        if(checkscanf!=1 || (pivotSize < 0 && pivotSize >= lines)) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry (between 0 and %d).\n", lines-1); 
+        }
+    }while(checkscanf!=1 || (pivotSize < 0 && pivotSize >= lines));
 
-    printf("Choose the direction to rotate the pieces:\n");
-    printf("Enter 'r' for right or 'l' for left: ");
-    scanf(" %c", &pivotDirection);
+
+    printf("Choose the column index of the pivot (0-%d): ", columns-1);
+    do{
+        checkscanf=scanf("%d", &pivotColumn);
+        emptybuffer();
+        if(checkscanf!=1 || (pivotSize < 0 && pivotSize >= columns)) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry (between 0 and %d).\n", columns-1); 
+        }
+    }while(checkscanf!=1 || (pivotSize < 0 && pivotSize >= columns));
+
+    printf("Choose the direction to rotate the slots:\nr: right (clockwise)          l: left (anticlockwise)\n");
+        do{
+        checkscanf=scanf(" %c", &pivotDirection);
+        emptybuffer();
+        if(checkscanf!=1 || (pivotDirection != 'r' && pivotDirection != 'l')) { //this part avoids bugs from scanf inputs
+            printf("Please enter a valid entry ('r' or 'l').\n"); 
+        }
+    }while(checkscanf!=1 || (pivotDirection != 'r' && pivotDirection != 'l'));
 
     if (pivotSize == 3 || pivotSize == 5) {
         // Calculate the boundaries of the pivot square
@@ -85,8 +109,8 @@ void pivotBoard(int lines, int columns, char** tab) {
 
         if (pivotDirection == 'r') {
             // Rotate the pieces outside the pivot square to the right
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
+            for (int i = 0; i < lines; i++) {
+                for (int j = 0; j < columns; j++) {
                     if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
                         // Calculate the new coordinates after rotation
                         int newRow = pivotRow + (j - pivotColumn);
@@ -104,8 +128,8 @@ void pivotBoard(int lines, int columns, char** tab) {
             }
         } else if (pivotDirection == 'l') {
             // Rotate the pieces outside the pivot square to the left
-            for (i = 0; i < lines; i++) {
-                for (j = 0; j < columns; j++) {
+            for (int i = 0; i < lines; i++) {
+                for (int j = 0; j < columns; j++) {
                     if ((i < pivotStartRow || i >= pivotEndRow) || (j < pivotStartColumn || j >= pivotEndColumn)) {
                         // Calculate the new coordinates after rotation
                         int newRow = pivotRow - (j - pivotColumn);
@@ -121,10 +145,7 @@ void pivotBoard(int lines, int columns, char** tab) {
                     }
                 }
             }
-        } else {
-            printf("Invalid pivot direction. Board not rotated.\n");
         }
-    } else {
-        printf("Invalid pivot size. Board not rotated.\n");
     }
+    return pivotSize;
 }

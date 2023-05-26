@@ -10,7 +10,7 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
         checkscanf=scanf(" %c",&entry);
         emptybuffer();
         if(checkscanf!=1 || (entry != 'y' && entry != 'n')){
-            printf("Please enter a valid value ('y' ou 'n').\n"); 
+            printf("Please enter a valid value ('y' or 'n').\n"); 
         }
     }while(checkscanf!=1 || (entry != 'y' && entry != 'n'));
 
@@ -33,7 +33,7 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
             checkscanf=scanf(" %c", &nogravity);
             emptybuffer();
             if(checkscanf!=1 || (nogravity != 'y' && nogravity != 'n')) { //this part avoids bugs from scanf inputs
-                printf("Please enter a valid entry ('y' ou 'n').\n"); 
+                printf("Please enter a valid entry ('y' or 'n').\n"); 
             }
         }while(checkscanf!=1 || (nogravity != 'y' && nogravity != 'n'));
 

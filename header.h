@@ -20,7 +20,7 @@
     void loadGame(int* lines, int* columns, int* round, int* align, char*** tab);
     void saveGame(int lines, int columns, int round, int align, char** tab);
 
-    void pivotBoard(int lines, int columns, char** tab);
+    int pivotBoard(int lines, int columns, char** tab);
     int choice(int round, int lines, int columns, int n, char **tab);
     void fill(int lines, int columns, char** tab, int column);
 
