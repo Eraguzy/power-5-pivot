@@ -1,6 +1,8 @@
 # CY-Connect
 Jeu créé par **Atahan Ozsolak**, **Elias Chekhab** et **Maxime Darcherif** pour **CY Tech**.
 
+(Jeu intégralement anglais)
+
 **CY-Connect** un est jeu basé sur les règles classiques d'un puissance X, avec certaines fonctionnalités supplémentaires qui rendent le jeu plus dynamique.
 
 
