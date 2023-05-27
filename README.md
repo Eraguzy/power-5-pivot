@@ -7,7 +7,7 @@ Jeu créé par **Atahan Ozsolak**, **Elias Chekhab** et **Maxime Darcherif** pou
 
 
 ## ✅ Règles du jeu
-(Si vous ne connaissez pas les règles du puissance 4, même si c'est peu probable, nous vous invitons à cliquer sur [ce lien](https://fr.wikipedia.org/wiki/Puissance_4) 🙂)
+>(Si vous ne connaissez pas les règles du puissance 4, même si c'est peu probable, nous vous invitons à cliquer sur [ce lien](https://fr.wikipedia.org/wiki/Puissance_4) 🙂)
 
 
 **CY-Connect** se joue à deux. Les joueurs s'affrontent en utilisant chacun une pièce différente qui les distingue (soit le **X**, soit le **O**). 
@@ -21,11 +21,14 @@ Outre les règles classiques d'un puissance X, ce jeu propose d'autres fonctionn
 
 - **Condition de victoire** : au début d'une nouvelle partie, vous pourrez choisir le nombre de **cases à aligner** pour gagner.
 - **Pivot** : Après avoir choisi la colonne où il joue, le joueur peut sélectionner la **taille** (3x3 ou 5x5), la **position** du pivot central et le **sens** dans lequel les cases vont tourner (soit à droite, soit à gauche, de 90°). 
-    #### Pour entrer les bonnes coordonnées de position, c'est simple : on entre d'abord le numéro de ligne souhaité (en comptant à partir de 1) puis le numéro de colonne (qui correspond aux numéros de colonne affichés en bas). Attention : Le carré sélectionné ne peut pas être vide, et ne peut pas dépasser du plateau de jeu.
-    #### Ensuite, on choisit le sens : horaire ou antihoraire. Après cela, la gravité s'applique et c'est au tour du joueur suivant. 
-    #### Cette fonctionnalité peut être désactivée au lancement du jeu.
+    > Pour entrer les bonnes coordonnées de position, c'est simple : on entre d'abord le numéro de ligne souhaité (en comptant à partir de 1) puis le numéro de colonne (qui correspond aux numéros de colonne affichés en bas). 
+    Attention : Le carré sélectionné ne peut pas être vide, et ne peut pas dépasser du plateau de jeu.
+    Ensuite, on choisit le sens : horaire ou antihoraire. Après cela, la gravité s'applique et c'est au tour du joueur suivant. 
+
+    Cette fonctionnalité peut être désactivée au lancement du jeu.
 - **Blocs anti-gravité** : au début d'une nouvelle partie, le joueur peut choisir s'il compte jouer avec ou sans des blocs anti-gravité (+). Ces derniers sont des blocs placés dans chaque coin du plateau et qui, comme leur nom l'indique, ne subissent pas de gravité. Cependant, ils peuvent être pivotés.
-- **Sauvegarde** : le jeu dispose d'un système de sauvegarde qui permet d'enrengistrer votre partie la où elle s'est arrêtée. Vous pouvez utiliser le chiffre '**999**' lors du choix de colonne pour sauvegarder le jeu et quitter le programme (on ne peut en revanche pas sauvegarder le jeu durant le choix des paramètres du pivot). Votre partie sela alors sauvegardée et dès que vous relancerez le jeu, vous pourrez restaurer la partie sauvegardée ou en lancer une nouvelle.
+- **Sauvegarde** : le jeu dispose d'un système de sauvegarde qui permet d'enrengistrer votre partie la où elle s'est arrêtée. Vous pouvez utiliser le chiffre '**999**' lors du choix de colonne pour sauvegarder le jeu et quitter le programme. Votre partie sela alors sauvegardée et dès que vous relancerez le jeu, vous pourrez restaurer la partie sauvegardée ou en lancer une nouvelle.
+    >On ne peut pas sauvegarder le jeu durant le choix des paramètres du pivot, uniquement lors du choix de colonne.
 
 ## ✅ Etapes pour compiler et lancer le jeu
 - Assurer vous d'avoir un compilateur C installé sur votre machine.
