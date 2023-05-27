@@ -14,7 +14,7 @@ int endgame(char slot, int lines, int columns, char** tab){ //ends the game when
 
 int notfull(int lines, int columns, char ** tab){ //checks every round if the array is fully filled
     for (int j=0; j<columns; j++){
-        if(tab[0][j]==32){
+        if(tab[0][j]==32){ //space in ascii
             return 1; //game goes on
         }
     }

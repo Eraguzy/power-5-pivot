@@ -1,6 +1,6 @@
 #include "header.h"
 
-void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
+void parameters(int* lines,int* columns,int* round, int* n, char* withpivot, char*** tab){
 
     char nogravity, entry; // if nogravity = y, then there will be the 4 nogravity slots 
     int checkscanf;
@@ -15,7 +15,7 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
     }while(checkscanf!=1 || (entry != 'y' && entry != 'n'));
 
     if(entry == 'y'){
-        loadGame(lines, columns, round, n, tab);
+        loadGame(lines, columns, round, n, withpivot, tab);
         if(*tab == NULL){
             // If no game has been loaded, we start a new game
             printf("malloc error\n");
@@ -23,7 +23,7 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
         }
     }
     else{
-        printf("\nStarting a new game...\n");
+        printf("\nStarting a new game... (if you don't save the current game, you will still be able to play the saved game)\n");
         sleep(2);
         printf("\nWelcome to \033[31mCY-Connect\033[0m ! Let's start by setting up the game settings. \n\nSpecial feature in this program  : you can play with squares that have \033[35mno gravity\033[0m (looks like this : '\033[40m + \033[0m'). \nWould you like to play with these ?\ny: yes          n: no\n");
 
@@ -36,6 +36,16 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
                 printf("Please enter a valid entry ('y' or 'n').\n"); 
             }
         }while(checkscanf!=1 || (nogravity != 'y' && nogravity != 'n'));
+
+
+        printf("\nAlright. Now, choose if you want to play with or without the \033[35mpivot\033[0m feature (please read the readme for more informations).\nWould you like to play with it ?\ny: yes          n: no\n");
+        do{ //play with or without nograv slots
+            checkscanf=scanf(" %c", withpivot);
+            emptybuffer();
+            if(checkscanf!=1 || (*withpivot != 'y' && *withpivot != 'n')) { //this part avoids bugs from scanf inputs
+                printf("Please enter a valid entry ('y' or 'n').\n"); 
+            }
+        }while(checkscanf!=1 || (*withpivot != 'y' && *withpivot != 'n'));
 
 
 
@@ -100,7 +110,7 @@ void parameters(int* lines,int* columns,int* round, int* n, char*** tab){
             (*tab)[(*lines)-1][(*columns)-1]='+';
         }
 
-        printf("\n\n\n\nLet's go ! The game is about to start. Have fun ;)\n(You can save your game at any moment of the game by typing '\033[31m999\033[0m')\n\n\n");
+        printf("\n\n\n\nLet's go ! The game is about to start. Have fun ;)\n(You can save your game when you can choose your column by typing '\033[31m999\033[0m')\n\n\n");
         sleep(3);
     }
 }

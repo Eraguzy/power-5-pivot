@@ -1,9 +1,9 @@
 #include "header.h"
 
-void saveGame(int lines, int columns, int round, int align, char** tab) {
+void saveGame(int lines, int columns, int round, int align, char withpivot, char** tab) {
     FILE* file = fopen("savegame.txt", "w");  // opens the save file (write)
 
-    fprintf(file, " %d %d %d %d\n", lines, columns, align, round);
+    fprintf(file, " %d %d %d %d %c\n", lines, columns, align, round, withpivot);
 
     for (int i = 0; i < lines; i++) { // writes the array
         for (int j = 0; j < columns; j++) {
@@ -16,14 +16,14 @@ void saveGame(int lines, int columns, int round, int align, char** tab) {
     exit(0);
 }
 
-void loadGame(int* lines, int* columns, int* round, int* align, char*** tab) {
+void loadGame(int* lines, int* columns, int* round, int* align, char* withpivot, char*** tab) {
     FILE* file = fopen("savegame.txt", "r");  // ouvre le fichier de sauvegarde en lecture
     if (file == NULL) {
         printf("No saved game found. Please put your save file in the right directory and reload the game.\n");
         exit(0);
     }
 
-    fscanf(file, " %d %d %d %d\n", lines, columns, align, round);
+    fscanf(file, " %d %d %d %d %c\n", lines, columns, align, round, withpivot);
 
     *tab = malloc(sizeof(char*) * (*lines));  // alloue de l'espace pour le tableau
     if (*tab == NULL) {

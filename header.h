@@ -17,14 +17,14 @@
     int notfull(int lines, int columns, char** tab);
     int align(int n, int lines, int columns, char** tab);
 
-    void loadGame(int* lines, int* columns, int* round, int* align, char*** tab);
-    void saveGame(int lines, int columns, int round, int align, char** tab);
+    void loadGame(int* lines, int* columns, int* round, int* align, char* withpivot, char*** tab);
+    void saveGame(int lines, int columns, int round, int align, char withpivot, char** tab);
 
     int pivotBoard(int lines, int columns, char** tab);
-    int choice(int round, int lines, int columns, int n, char **tab);
+    int choice(int round, int lines, int columns, int n, char withpivot, char **tab);
     void fill(int lines, int columns, char** tab, int column);
 
     void emptybuffer(void);
 
-    void parameters(int* lines,int* columns,int* round,int* n, char*** tab);
+    void parameters(int* lines,int* columns, int* round,int* n, char* withpivot,char*** tab);
 #endif
