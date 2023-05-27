@@ -1,7 +1,7 @@
 # CY-Connect
 Jeu créé par **Atahan Ozsolak**, **Elias Chekhab** et **Maxime Darcherif** pour **CY Tech**.
 
-(Jeu intégralement anglais)
+(Jeu intégralement en anglais)
 
 **CY-Connect** un est jeu basé sur les règles classiques d'un puissance X, avec certaines fonctionnalités supplémentaires qui rendent le jeu plus dynamique.
 
@@ -12,7 +12,7 @@ Jeu créé par **Atahan Ozsolak**, **Elias Chekhab** et **Maxime Darcherif** pou
 
 **CY-Connect** se joue à deux. Les joueurs s'affrontent en utilisant chacun une pièce différente qui les distingue (soit le **X**, soit le **O**). 
 
-Les joueurs jouent chacun leur tour en choisissant une **colonne** du tableau où mettre leur pièce. Une fois la colonne choisie, la pièce tombe jusqu'à atteindre la position la plus basse disponible dans celle-ci.
+Les joueurs jouent chacun leur tour en choisissant une **colonne** du tableau où mettre leur pièce. Une fois la colonne choisie, la pièce tombe sous l'effet de la gravité jusqu'à atteindre la position la plus basse disponible dans celle-ci.
 
 Après chaque lancement d'une pièce, le joueur peut effectuer une rotation à 90° dans le sens horaire ou antihoraire d'une portion du plateau de jeu autour d'un **pivot** sélectionné par ce joueur.
 
@@ -26,27 +26,28 @@ Outre les règles classiques d'un puissance X, ce jeu propose d'autres fonctionn
     Ensuite, on choisit le sens : horaire ou antihoraire. Après cela, la gravité s'applique et c'est au tour du joueur suivant. 
 
     Cette fonctionnalité peut être désactivée au lancement du jeu.
-- **Blocs anti-gravité** : au début d'une nouvelle partie, le joueur peut choisir s'il compte jouer avec ou sans des blocs anti-gravité (+). Ces derniers sont des blocs placés dans chaque coin du plateau et qui, comme leur nom l'indique, ne subissent pas de gravité. Cependant, ils peuvent être pivotés.
+- **Blocs anti-gravité** : au début d'une nouvelle partie, le joueur peut choisir s'il compte jouer avec ou sans des blocs anti-gravité (**+**). Ces derniers sont des blocs placés dans chaque coin du plateau et qui, comme leur nom l'indique, ne subissent pas de gravité. Cependant, ils peuvent subir l'action des pivots.
 - **Sauvegarde** : le jeu dispose d'un système de sauvegarde qui permet d'enrengistrer votre partie la où elle s'est arrêtée. Vous pouvez utiliser le chiffre '**999**' lors du choix de colonne pour sauvegarder le jeu et quitter le programme. Votre partie sela alors sauvegardée et dès que vous relancerez le jeu, vous pourrez restaurer la partie sauvegardée ou en lancer une nouvelle.
-    >On ne peut pas sauvegarder le jeu durant le choix des paramètres du pivot, uniquement lors du choix de colonne.
+    >Il n'est pas possible de sauvegarder le jeu durant le choix des paramètres du pivot, uniquement lors du choix de colonne.
 
 ## ✅ Etapes pour compiler et lancer le jeu
-- Assurer vous d'avoir un compilateur C installé sur votre machine.
+- Assurez vous d'avoir `gcc` installé sur votre ordinateur.
 - Téléchargez les fichiers source du jeu sur [ce dépot **Github**](https://github.com/Eraguzy/power-5-pivot).
 - Ouvrez le terminal et accédez au répertoire contenant les fichiers source.
 - Compilez le programme à l'aide de la commande de compilation suivante :
 ```bibtex
 make
 ```
-- Après avoir compilé le programme, toujours dans le bon répertoire, exécutez le programme en tapant la commande suivante :
+- Après avoir compilé le programme, toujours dans le bon répertoire, exécutez le programme en entrant la commande suivante :
 ```bibtex
 ./cyconnect
 ```
 
 ## ✅ Bugs et limitations du code
 
-- On ne peut pas automatiquement rejouer au jeu : une fois une partie terminée, il faut relancer le programme avec la commande
+- Il n'est pas possible de rejouer au jeu : une fois une partie terminée, il faut relancer le programme avec la commande
 ```bibtex
 ./cyconnect
 ```
 - Un seul fichier de sauvegarde `savegame.txt` peut être créé. En crééant une nouvelle sauvegarde, vous écraserez l'ancienne.
+- Il n'y a pas d'animation montrant la pièce chuter dans sa colonne : on voit directement à quelle position finale la pièce va se trouver.
