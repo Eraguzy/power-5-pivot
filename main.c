@@ -14,7 +14,7 @@ int main(){
         fill(lines, columns, tab, choice(round, lines, columns , n, withpivot, tab)); //gravity after player's choice
         
         if(withpivot=='y'){
-            if(align(n, lines, columns, tab)==0 || notfull(lines,columns, tab)==0){ //end of game if there is an end condition
+            if(notfull(lines,columns, tab)==0){ //end of game if there is an end condition
                 return 0;
             }
             displayer(lines, columns, tab);

@@ -3,7 +3,7 @@
 void saveGame(int lines, int columns, int round, int align, char withpivot, char** tab) {
     FILE* file = fopen("savegame.txt", "w");  // opens the save file (write)
 
-    fprintf(file, " %d %d %d %d %c\n", lines, columns, align, round, withpivot);
+    fprintf(file, " %d %d %d %d %c \n", lines, columns, align, round, withpivot);
 
     for (int i = 0; i < lines; i++) { // writes the array
         for (int j = 0; j < columns; j++) {
@@ -23,7 +23,7 @@ void loadGame(int* lines, int* columns, int* round, int* align, char* withpivot,
         exit(0);
     }
 
-    fscanf(file, " %d %d %d %d %c\n", lines, columns, align, round, withpivot);
+    fscanf(file, " %d %d %d %d %c \n", lines, columns, align, round, withpivot);
 
     *tab = malloc(sizeof(char*) * (*lines));  // alloue de l'espace pour le tableau
     if (*tab == NULL) {
